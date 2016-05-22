@@ -3,7 +3,7 @@ import wrappers from './wrappers';
 
 const debug = makeDebug('feathers-rest');
 
-function formatter(req, res, next) {
+function defaultFormatter(req, res, next) {
   if(!res.data) {
     next();
   }
@@ -15,7 +15,11 @@ function formatter(req, res, next) {
   });
 }
 
-export default function rest(handler = formatter) {
+export default function rest(formatter = defaultFormatter) {
+  if (typeof formatter !== 'function') {
+    throw new Error(`Invalid argument passed to 'rest' provider. Handler must be a function.`);
+  }
+
   return function () {
     const app = this;
 
@@ -27,18 +31,17 @@ export default function rest(handler = formatter) {
     app.rest = wrappers;
 
     // Register the REST provider
-    app.providers.push(function (path, service, options) {
+    app.providers.push(function (path, service, options = {}) {
       const uri = path.indexOf('/') === 0 ? path : `/${path}`;
       const baseRoute = app.route(uri);
       const idRoute = app.route(`${uri}/:id`);
 
-      let middleware = (options || {}).middleware || {};
+      let middleware = options.middleware || {};
       let before = middleware.before || [];
       let after = middleware.after || [];
 
-      if(typeof handler === 'function') {
-        after = after.concat(handler);
-      }
+      // Add the response formatter as the last middleware function for the route.
+      after = after.concat(formatter);
 
       debug(`Adding REST provider for service \`${path}\` at base route \`${uri}\``);
 
@@ -65,4 +68,4 @@ export default function rest(handler = formatter) {
   };
 }
 
-rest.formatter = formatter;
+rest.formatter = defaultFormatter;
