@@ -19,7 +19,7 @@ export default class Base {
     let url = this.base;
 
     if (typeof id !== 'undefined' && id !== null) {
-      url += `/${id}`;
+      url = url.indexOf(':id') !== -1 ? url.replace(':id', id) : url + `/${id}`;
     }
 
     if (Object.keys(params).length !== 0) {
