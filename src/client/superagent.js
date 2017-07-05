@@ -15,6 +15,10 @@ export default class Service extends Base {
         superagent.send(options.body);
       }
 
+      if (options.withCredentials) {
+        superagent.withCredentials();
+      }
+
       superagent.end(function (error, res) {
         if (error) {
           try {
