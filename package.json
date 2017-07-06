@@ -1,7 +1,7 @@
 {
-  "name": "feathers-rest",
+  "name": "feathers-rest-arachne",
   "description": "The Feathers REST API provider",
-  "version": "1.7.2",
+  "version": "1.7.3",
   "homepage": "https://github.com/feathersjs/feathers-rest",
   "main": "lib/",
   "types": [
@@ -31,7 +31,7 @@
   },
   "scripts": {
     "prepublish": "npm run compile",
-    "publish": "git push origin --tags && npm run changelog && git push origin",
+    "publish-orig": "git push origin --tags && npm run changelog && git push origin",
     "changelog": "github_changelog_generator && git add CHANGELOG.md && git commit -am \"Updating changelog\"",
     "release:patch": "npm version patch && npm publish",
     "release:minor": "npm version minor && npm publish",
